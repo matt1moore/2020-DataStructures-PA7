@@ -239,12 +239,10 @@ TEST(BSTCollectionTest, RemoveNodeWithTwoChildren) {
   ASSERT_EQ(6, c.size());
   // remove d (where right child has no left child)
   c.remove("d");
-  print(c); 
   ASSERT_EQ(5, c.size());
   ASSERT_EQ(3, c.height());
   // remove b (with right child having a left child)
   c.remove("b");
-  print(c); 
   ASSERT_EQ(4, c.size());
   ASSERT_EQ(3, c.height());
 }
@@ -304,6 +302,106 @@ TEST(BSTCollectionTest, SimpleHeight) {
   coll.add("o",60);
   ASSERT_EQ(3,coll.height());
   
+}
+
+// ~~~~~~~~~~~~~~ ADDITIONAL TEST 2: Remove Right List ~~~~~~~~~~~~~~
+TEST(BSTCollectionTest, RemoveRL) {
+	
+  BSTCollection<int,int> c;
+  // Find from only right pointers being used
+  for (int i = 0; i < 10; ++i) {
+    c.add(i,10);
+  }
+  int v;
+  for (int i = 9; i >= 0; --i) {
+    c.remove(i);
+	ASSERT_EQ(false,c.find(i,v)); 
+	ASSERT_EQ(i,c.height()); 
+  }
+ 
+}
+
+// ~~~~~~~~~~~~~~ ADDITIONAL TEST 3: Remove Left List ~~~~~~~~~~~~~~
+TEST(BSTCollectionTest, RemoveLL) {
+	
+  BSTCollection<int,int> c;
+  // Find from only left pointers being used
+  for (int i = 9; i >= 0; --i) {
+    c.add(i,10);
+  }
+  
+  int v;
+  for (int i = 0; i < 10; ++i) {
+    c.remove(i);
+	ASSERT_EQ(false,c.find(i,v)); 
+	ASSERT_EQ(9-i,c.height()); 
+  }
+ 
+}
+
+// ~~~~~~~~~~~~~~ ADDITIONAL TEST 4: Large Random Remove ~~~~~~~~~~~~~~
+TEST(BSTCollectionTest, RandomeRemove) {
+	
+  BSTCollection<int,int> c;
+  // An assortment of elements of different values selected
+  c.add(10,10);
+  c.add(5,10);
+  c.add(15,10);
+  c.add(3,10);
+  c.add(7,10);
+  c.add(12,10);
+  c.add(17,10);
+  c.add(1,10);
+  c.add(4,10);
+  c.add(6,10);
+  c.add(8,10);
+  c.add(11,10);
+  c.add(13,10);
+  
+  // Balanced tree of height 4 and 13 total elements
+  ASSERT_EQ(4,c.height()); 
+  
+  c.remove(10);
+  c.remove(5);
+  c.remove(15);
+  
+  int v;
+  ASSERT_EQ(10,c.size());
+  ASSERT_EQ(false,c.find(10,v));
+  ASSERT_EQ(false,c.find(5,v));
+  ASSERT_EQ(false,c.find(15,v));
+  
+}
+
+// ~~~~~~~~~~~~~~ ADDITIONAL TEST 5: Large Scale Sort ~~~~~~~~~~~~~~
+TEST(BSTCollectionTest, LargeScaleSort) {
+	
+  BSTCollection<int,int> c;
+  c.add(10,10);
+  c.add(5,10);
+  c.add(15,10);
+  c.add(3,10);
+  c.add(7,10);
+  c.add(12,10);
+  c.add(17,10);
+  c.add(1,10);
+  c.add(4,10);
+  c.add(6,10);
+  c.add(8,10);
+  c.add(11,10);
+  c.add(13,10);
+
+  ArrayList<int> sorted_keys;
+  c.sort(sorted_keys);
+  ASSERT_EQ(13, sorted_keys.size());
+  // check if in sorted order
+  for (size_t i = 1; i < sorted_keys.size(); ++i) {
+    int k1;
+    int k2;
+    ASSERT_EQ(true, sorted_keys.get(i-1, k1));
+    ASSERT_EQ(true, sorted_keys.get(i, k2));
+    ASSERT_LT(k1, k2);
+  }
 }
 // TODO: Add at least 5 non-trival tests below for your BST Collection
 // class. Be sure for each test to provide comments describing the
