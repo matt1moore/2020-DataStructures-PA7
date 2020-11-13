@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------
-// Name: 
+// Name: Matthew Moore
 // File: hw7_test.cpp
 // Date: Fall 2020
 // Desc: Unit tests for BST key-value collection implementation
@@ -29,6 +29,20 @@ void print(const Collection<K,V>& kv_list)
     the_keys.get(i, key);
     kv_list.find(key, val);
     cout << key << ": " << val;
+    if (i < the_keys.size() - 1)
+      cout << ", ";
+  }
+  cout << "}";
+}
+
+template<typename K>
+void print(const ArrayList<K>& the_keys)
+{
+  cout << "{";
+  for (size_t i = 0; i < the_keys.size(); ++i) {
+    K key;
+    the_keys.get(i, key);
+    cout << key;
     if (i < the_keys.size() - 1)
       cout << ", ";
   }
@@ -252,8 +266,43 @@ TEST(BSTCollectionTest, RemoveNodeWithTwoChildrenWithLeft) {
   ASSERT_EQ(3, c.height());
 }
 
+// Additional Tests
 
-
+// ~~~~~~~~~~~~~~ ADDITIONAL TEST 1: Height Test ~~~~~~~~~~~~~~
+TEST(BSTCollectionTest, SimpleHeight) {
+	
+  // Testing height when adding elements in order
+  BSTCollection<string,int> c;
+  c.add("a",10);
+  ASSERT_EQ(1,c.height());
+  c.add("b",20);
+  ASSERT_EQ(2,c.height());
+  c.add("c",30);
+  ASSERT_EQ(3,c.height());
+  c.add("d",40);
+  ASSERT_EQ(4,c.height());
+  c.add("e",50);
+  ASSERT_EQ(5,c.height());
+  c.add("f",60);
+  ASSERT_EQ(6,c.height());
+  
+  
+  // Testing height when adding elements to create a balanced tree
+  BSTCollection<string,int> coll;
+  coll.add("m",10);
+  ASSERT_EQ(1,coll.height());
+  coll.add("g",20);
+  ASSERT_EQ(2,coll.height());
+  coll.add("t",30);
+  ASSERT_EQ(2,coll.height());
+  coll.add("c",40);
+  ASSERT_EQ(3,coll.height());
+  coll.add("i",50);
+  ASSERT_EQ(3,coll.height());
+  coll.add("o",60);
+  ASSERT_EQ(3,coll.height());
+  
+}
 // TODO: Add at least 5 non-trival tests below for your BST Collection
 // class. Be sure for each test to provide comments describing the
 // detailed purpose of each the test.
