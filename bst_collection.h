@@ -111,25 +111,25 @@ void BSTCollection<K,V>::add(const K& a_key, const V& a_val)
   Node * newNode = new Node;
   newNode->key = a_key;
   newNode->value = a_val;
-  
+  newNode->left = nullptr;
+  newNode->right = nullptr;
+		
   // Case of first element being added
-  if (curr_ptr == NULL) {
+  if (curr_ptr == nullptr) {
     // Root points to NULL so add initial node as the root
 	root = newNode;
-	root->left = NULL;
-	root->right = NULL;
+	root->left = nullptr;
+	root->right = nullptr;
 	++node_count;
 	return;
   }
   
   // Traversing down a path to the end 
-  while (curr_ptr != NULL) {
+  while (curr_ptr != nullptr) {
     if (a_key > curr_ptr->key) {
-	  if (curr_ptr->right == NULL) {
+	  if (curr_ptr->right == nullptr) {
 	    // leaf node has been reached
 		curr_ptr->right = newNode;
-		newNode->left = NULL;
-		newNode->right = NULL;
 		++node_count;
 		return;
 	  }
@@ -137,11 +137,9 @@ void BSTCollection<K,V>::add(const K& a_key, const V& a_val)
 	  curr_ptr = curr_ptr->right;
 	}
     else if (a_key < curr_ptr->key) {
-	  if (curr_ptr->left == NULL) {
+	  if (curr_ptr->left == nullptr) {
 	    // leaf node has been reached
 		curr_ptr->left = newNode;
-		newNode->left = NULL;
-		newNode->right = NULL;
 		++node_count;
 		return;
 	  }
@@ -157,178 +155,7 @@ void BSTCollection<K,V>::add(const K& a_key, const V& a_val)
 template<typename K, typename V>
 void BSTCollection<K,V>::remove(const K& a_key)
 {
-  Node * subtree_root = remove(root,a_key); 
-  
-  if (height(subtree_root) == 2) {
-    // CASE 1: leaf node
-	if (a_key > subtree_root->key) { 
-      // The key removed was to the right
-	  subtree_root->right = nullptr;
-	}
-	else {
-	  subtree_root->left = nullptr;
-	}
-  }
-  else if (height(subtree_root) == 1) {
-    // CASE 2: Single child node
-	if (root == nullptr) {
-	  root = subtree_root;
-	}
-  }
-  // The node removed was the leaf node
-	
-  /*
-  Node * curr_ptr = root;
-  Node * prev_ptr = nullptr; 
-  while (curr_ptr != NULL) {
-    // Extends down a path of the binary tree to locate the node
-	if (curr_ptr->key == a_key) {
-      // Key has been located
-	  if (height(curr_ptr) == 1) {
-	    // CASE 1: leaf node
-		if (curr_ptr == root) {
-		  // Case of root being the current pointer 
-		  delete curr_ptr;
-		  --node_count; 
-		  root = nullptr;
-		  return;
-		}
-		else if (prev_ptr->key > curr_ptr->key) {
-		  // Tells us that the curr pointer is on the left
-		  prev_ptr->left = nullptr;
-		}
-		else {
-		  // Otherwise it will be located on the right
-		  prev_ptr->right = nullptr;
-		}
-        delete curr_ptr;
-		--node_count;
-        return; 		
-	  }
-	  else if (curr_ptr->left == nullptr || curr_ptr->right == nullptr) {
-	    // CASE 2: Single Child Case 
-		// Right Node should always take the parent position, unless it does not exist
-		if (curr_ptr == root) {
-		  // Current pointer is the root, so no use for the previous pointer
-		  if (curr_ptr->right != nullptr) {
-		    root = curr_ptr->right;
-		  }
-		  else {
-		    root = curr_ptr->left;
-		  }
-		}
-		else if (prev_ptr > curr_ptr) {
-		  // Curr pointer is on the left
-		  if (curr_ptr->right != nullptr) {
-		    prev_ptr->left = curr_ptr->right;
-		  }
-		  else {
-		    prev_ptr->left = curr_ptr->left;
-		  }
-		}
-		else {
-		  // Curr pointer is on the right
-		  if (curr_ptr->right != nullptr) {
-		    prev_ptr->left = curr_ptr->right;
-		  }
-		  else {
-		    prev_ptr->left = curr_ptr->left;
-		  }
-		}
-		delete curr_ptr;
-		--node_count;
-		return; 
-	  }
-	  else if (height(curr_ptr) == 2 && (curr_ptr->left != nullptr && curr_ptr->right != nullptr)) {
-	    // CASE 3: Two Children with height of 2
-		if (curr_ptr == root) {
-		  // Special case of the root being the removed node
-		  root = curr_ptr->right;
-		  root->left = curr_ptr->left;
-		  root->right = nullptr;
-		}
-		else if (curr_ptr > prev_ptr) {
-		  // current pointer is on the right of the previous
-		  prev_ptr->right = curr_ptr->right;
-		  prev_ptr->right->left = curr_ptr->left;
-		  prev_ptr->right->right = nullptr;
-		}
-		else {
-		  // current pointer is on the left of the previous
-		  prev_ptr->left = curr_ptr->right;
-		  prev_ptr->left->left = curr_ptr->left;
-		  prev_ptr->left->right = nullptr;
-		}
-		delete curr_ptr;
-		--node_count;
-		return;
-	  }
-	  else {
-	    // CASE 4: Curr pointer has height of more than 2
-	    curr_ptr = remove(curr_ptr,a_key);
-		delete curr_ptr;
-		--node_count;
-		return;
-	  }
-	}
-	else if (a_key < curr_ptr->key) {
-	  // key being removed is greater than the current key
-	  prev_ptr = curr_ptr;
-	  curr_ptr = curr_ptr->left;
-	}
-	else if (a_key > curr_ptr->key) {
-	  // key being removed is less than the current key
-	  prev_ptr = curr_ptr;
-	  curr_ptr = curr_ptr->right;
-	}
-  }
-  
-  
-  
-  
-  // base case
-    if (root == NULL)
-        return root;
- 
-    // If the key to be deleted is 
-    // smaller than the root's
-    // key, then it lies in left subtree
-    if (key < root->key)
-        root->left = deleteNode(root->left, key);
- 
-    // If the key to be deleted is
-    // greater than the root's
-    // key, then it lies in right subtree
-    else if (key > root->key)
-        root->right = deleteNode(root->right, key);
- 
-    // if key is same as root's key, then This is the node
-    // to be deleted
-    else {
-        // node with only one child or no child
-        if (root->left == NULL) {
-            struct node* temp = root->right;
-            free(root);
-            return temp;
-        }
-        else if (root->right == NULL) {
-            struct node* temp = root->left;
-            free(root);
-            return temp;
-        }
- 
-        // node with two children: Get the inorder successor
-        // (smallest in the right subtree)
-        struct node* temp = minValueNode(root->right);
- 
-        // Copy the inorder successor's content to this node
-        root->key = temp->key;
- 
-        // Delete the inorder successor
-        root->right = deleteNode(root->right, temp->key);
-    }
-    return root;
-  */
+  remove(root,a_key); 
 }
 template<typename K, typename V>
 bool BSTCollection<K,V>::find(const K& search_key, V& the_val) const
@@ -392,7 +219,10 @@ void BSTCollection<K,V>::make_empty(Node* subtree_root)
   }
   make_empty(subtree_root->left);
   make_empty(subtree_root->right); 
+  subtree_root->right = nullptr;
+  subtree_root->left = nullptr;
   delete subtree_root;
+  
 }
 
 template<typename K, typename V>
@@ -430,6 +260,7 @@ template<typename K, typename V>
 typename BSTCollection<K,V>::Node *
 BSTCollection<K,V>::remove(Node* subtree_root, const K& a_key)
 {
+  Node * tmp = nullptr;
   if (subtree_root == nullptr) {
     // BASE CASE
 	return NULL;
@@ -442,54 +273,66 @@ BSTCollection<K,V>::remove(Node* subtree_root, const K& a_key)
   }
   else if (subtree_root != nullptr && (a_key > subtree_root->key)) {
 	// Removing element is to the right
-    subtree_root->right = remove(subtree_root->left,a_key);
+    subtree_root->right = remove(subtree_root->right,a_key);
   }
-  else if (subtree_root != nullptr && (subtree_root->key == a_key)) {
-    // Key has been located
+  else if (subtree_root != nullptr && (a_key == subtree_root->key)) {
+    // The element to remove has been reached
 	if (height(subtree_root) == 1) {
-	  // CASE 1: leaf node
-      if (subtree_root == root) {
-		// Case of root being the current pointer 
-		delete subtree_root;
-		--node_count; 
-		  root = nullptr;
-	  }
-	  else {
-	    // Must set the left or right pointer of the parent to null
-		// Allow the recursion to climb back up to the parent
-		delete subtree_root;
-		--node_count; 
-	  }
-	}
-	else if (subtree_root->right == nullptr || subtree_root->left == nullptr) {
-	  // CASE 2: Node with one child node
-	  Node * tmp;
-	  if (subtree_root->right != nullptr) {
-	    tmp = subtree_root->right;
-	  }
-	  else {
-	    tmp = subtree_root->left;
-	  }
+	  // CASE 1: Leaf Node
 	  if (subtree_root == root) {
-	    root = nullptr;
+	    // Special Case of root removed
+		root = tmp;
 	  }
 	  delete subtree_root;
 	  --node_count;
-	  return tmp;
+      // Assigning value to subtree_root to get reconnected to end of tree
+	  subtree_root = tmp;
 	}
-	else if (height(subtree_root) == 2 && (subtree_root->right != nullptr && subtree_root->left)) {
-	  // CASE 3: 2 Nodes but only a height of two
-	  // delete subtree_root;
-	  // --node_count;
+	else if (subtree_root->right != nullptr || subtree_root->left != nullptr) {
+	  // CASE 2: Single Child Case
+	  if (subtree_root->right == nullptr) {
+	    // Tells us that only the left subtree exists
+	    tmp = subtree_root->left;
+	    }
+	  else {
+	    // Tells us that only the right subtree exists
+		tmp = subtree_root->right;
+	  }
+	  if (subtree_root == root) { 
+	    root = tmp; 
+	  }
+	  delete subtree_root;
+	  --node_count; 
+	  // Assigning value to subtree_root to get reconnected to end of tree
+	  subtree_root = tmp;
+	}
+	else if (subtree_root->right->left == nullptr) {
+		cout << "test" << endl; 
+	  // CASE 3: Two Children and no need for in order successor
+	  tmp = subtree_root->right;
+	  subtree_root->right->left = subtree_root->left;
+	  delete subtree_root;
+	  --node_count;
+	  subtree_root = tmp;
 	}
 	else {
-	  // delete subtree_root;
-	  // --node_count; 
+	  // CASE 4: Two Children and inorder successor needed
+	  // Initially go to the right
+	  tmp = subtree_root->right; 
+	  // Traverse left until the left most node is reached
+	  while (tmp != nullptr) {
+	    tmp = tmp->left;
+	  }
+	  // Copy over the values of this node
+	  subtree_root->key = tmp->key;
+	  subtree_root->value = tmp->value;
+	  // Finally remove the inorder successor
+	  subtree_root->right = remove(subtree_root->right,tmp->key); 
 	}
   }
-  
+
   return subtree_root;
-  
+
 }
 template<typename K, typename V>
 void BSTCollection<K,V>::find(const Node* subtree_root, const K& k1, const K& k2, ArrayList<K>& keys) const

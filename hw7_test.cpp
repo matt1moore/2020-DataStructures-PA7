@@ -239,10 +239,12 @@ TEST(BSTCollectionTest, RemoveNodeWithTwoChildren) {
   ASSERT_EQ(6, c.size());
   // remove d (where right child has no left child)
   c.remove("d");
+  print(c); 
   ASSERT_EQ(5, c.size());
   ASSERT_EQ(3, c.height());
   // remove b (with right child having a left child)
   c.remove("b");
+  print(c); 
   ASSERT_EQ(4, c.size());
   ASSERT_EQ(3, c.height());
 }
