@@ -174,8 +174,8 @@ bool ArrayList<T>:: remove(size_t index) {
 	}
 	else {
 		// Valid index number, so remove value
-		for (size_t i = index; i < length; i++) {
-			items[i] = items[i + 1];
+		for (size_t i = index + 1; i < length; i++) {
+			items[i - 1] = items[i];
 		}
 		// Re-evaluate the size of the array
 		length = length - 1;
@@ -210,23 +210,30 @@ void ArrayList<T>:: resize() {
 template<typename T> 
 void ArrayList<T>::selection_sort() {
 	
-		T temp;
-		size_t index;
-		for (size_t j = 0; j < length - 1; ++j) {
-			// Outerloop which places the minimum at the front of the sorted portion
-			index = j; 
-			for (size_t i = j + 1; i < length; ++i) {
-				// Inner loop which searches for the current min in unsorted array
-				if (items[i] < items[index]) { 
-					// New min has been found
-					index = i;
-				}
-			}
-			// Swap the min element and first element in unsorted portion
-			temp = items[j];
-			items[j] = items[index];
-			items[index] = temp;
-		}
+  T temp;
+  int index = 0;
+  for (int j = 0; j < length - 1; j++) {
+	// Outerloop which places the minimum at the front of the sorted portion
+	index = j; 
+	if ((j + 1) < length && index < length) {
+	  // Confirms that the index and inner loop is located within the array
+	  for (int i = j + 1; i < length; i++) {
+		  // Inner loop which searches for the current min in unsorted array
+		  if (items[i] < items[index]) { 
+			  // New min has been found
+			  index = i;
+		  }
+	  }
+	  // Swap the min element and first element in unsorted portion
+      temp = items[j];
+      items[j] = items[index];
+      items[index] = temp;
+    }
+	else {
+	  // Case of getting out of range in the performance tests
+	  return;
+	}
+  }
 }
 
 template<typename T> 
